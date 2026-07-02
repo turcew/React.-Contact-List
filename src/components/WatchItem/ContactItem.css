@@ -1,0 +1,17 @@
+.container {
+  outline: solid;
+  width: 400px;
+}
+
+button {
+  width: 50px;
+}
+
+p {
+  max-width: 50px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+}

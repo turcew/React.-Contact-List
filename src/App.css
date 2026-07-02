@@ -1,0 +1,16 @@
+h1 {
+  outline: solid;
+  padding: 15px 0;
+}
+
+.items {
+  display: flex;
+  justify-content: center;
+  justify-content: space-evenly;
+}
+
+.site {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
