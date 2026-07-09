@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 import ContactList from "./components/WatchList/ContactList";
@@ -6,110 +6,73 @@ import ContactForm from "./components/WatchForm/ContactForm";
 import ContactBtns from "./components/ContactBtns/ContactBtns";
 import { nanoid } from "nanoid";
 
-export class App extends Component {
-  state = {
-    currentContact: null,
-    contacts: [
-      {
-        id: 1,
-        firstName: "John",
-        lastName: "Doe",
-        email: "teast@gmail.com",
-        phone: "+123456789",
-      },
-      {
-        id: 2,
-        firstName: "Jane",
-        lastName: "Doe",
-        email: "toast@gmail.com",
-        phone: "+987654321",
-      },
-    ],
-  };
+const App = () => {
+  const [contacts, setContacts] = useState([]);
+  const [currentContact, setCurrentContact] = useState(null);
 
-  componentDidMount() {
-    const contacts = JSON.parse(localStorage.getItem("contacts"));
-    if (!contacts) {
-      this.setState({
-        contacts: [],
-      });
-    } else {
-      this.setState({
-        contacts: [...contacts],
-      });
+  useEffect(() => {
+    const savedContacts = localStorage.getItem("contacts");
+    if (savedContacts) {
+      setContacts(JSON.parse(savedContacts));
     }
-  }
+  }, []);
 
-  removeContact = (id) => {
-    this.setState((state) => {
-      const contacts = [
-        ...state.contacts.filter((contact) => contact.id !== id),
-      ];
-      this.saveContacts(contacts);
-      return {
-        contacts,
-        currentContact: null,
-      };
-    });
+  const saveContacts = (updatedContacts) => {
+    localStorage.setItem("contacts", JSON.stringify(updatedContacts));
   };
 
-  addContact = (contact) => {
-    contact.id = nanoid();
-    this.setState((state) => {
-      const contacts = [...state.contacts, contact];
-      this.saveContacts(contacts);
-      return {
-        contacts,
-      };
-    });
+  const removeContact = (id) => {
+    const updatedContacts = contacts.filter((contact) => contact.id !== id);
+    setContacts(updatedContacts);
+    setCurrentContact(null);
+    saveContacts(updatedContacts);
   };
 
-  newContact = () => {
-    this.setState({ currentContact: null });
+  const addContact = (newContact) => {
+    const contactWithId = { ...newContact, id: nanoid() };
+    const updatedContacts = [...contacts, contactWithId];
+    setContacts(updatedContacts);
+    saveContacts(updatedContacts);
   };
 
-  saveContacts = (arrContacts) => {
-    localStorage.setItem("contacts", JSON.stringify(arrContacts));
+  const editContact = (editedContact) => {
+    const updatedContacts = contacts.map((contact) =>
+      contact.id === editedContact.id ? editedContact : contact,
+    );
+    setContacts(updatedContacts);
+    saveContacts(updatedContacts);
   };
 
-  editContact = (editedContact) => {
-    this.setState((state) => {
-      const contacts = state.contacts.map((contact) =>
-        contact.id === editedContact.id ? editedContact : contact,
-      );
-      this.saveContacts(contacts);
-      return { contacts: contacts };
-    });
+  const handleEditClick = (contact) => {
+    setCurrentContact(contact);
   };
 
-  handleEditClick = (contact) => {
-    this.setState({ currentContact: contact });
+  const newContact = () => {
+    setCurrentContact(null);
   };
 
-  render() {
-    return (
-      <div className="site">
-        <h1>Contact list</h1>
-        <div className="items">
-          <ContactList
-            contacts={this.state.contacts}
-            onRemove={this.removeContact}
-            onEdit={this.handleEditClick}
-          />
-          <ContactForm
-            onSubmit={this.addContact}
-            onEdit={this.editContact}
-            editingContact={this.state.currentContact}
-          />
-        </div>
-        <ContactBtns
-          onRemove={this.removeContact}
-          editingContact={this.state.currentContact}
-          onNewClick={this.newContact}
+  return (
+    <div className="site">
+      <h1>Contact list</h1>
+      <div className="items">
+        <ContactList
+          contacts={contacts}
+          onRemove={removeContact}
+          onEdit={handleEditClick}
+        />
+        <ContactForm
+          onSubmit={addContact}
+          onEdit={editContact}
+          editingContact={currentContact}
         />
       </div>
-    );
-  }
-}
+      <ContactBtns
+        onRemove={removeContact}
+        editingContact={currentContact}
+        onNewClick={newContact}
+      />
+    </div>
+  );
+};
 
 export default App;

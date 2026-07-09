@@ -1,86 +1,59 @@
-import React, { Component } from "react";
-
+import React, { useState, useEffect } from "react";
 import "./ContactForm.css";
 
-export class ContactForm extends Component {
-  state = {
+const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
+  const [formData, setFormData] = useState({
     id: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-  };
+  });
 
-  onFormSubmit = (event) => {
-    event.preventDefault();
-    if (this.props.editingContact === null) {
-      this.props.onSubmit({
-        firstName:
-          this.state.firstName === ""
-            ? (this.state.firstName = "firstName")
-            : this.state.firstName,
-        lastName:
-          this.state.lastName === ""
-            ? (this.state.lastName = "lastName")
-            : this.state.lastName,
-        email:
-          this.state.email === ""
-            ? (this.state.email = "test@gmail.com")
-            : this.state.email,
-        phone:
-          this.state.phone === ""
-            ? (this.state.phone = "phone")
-            : this.state.phone,
+  useEffect(() => {
+    if (editingContact) {
+      setFormData({
+        id: editingContact.id || "",
+        firstName: editingContact.firstName || "",
+        lastName: editingContact.lastName || "",
+        email: editingContact.email || "",
+        phone: editingContact.phone || "",
       });
-      this.resetForm();
     } else {
-      this.props.onEdit({
-        id: this.state.id,
-        firstName:
-          this.state.firstName === ""
-            ? (this.state.firstName = "firstName")
-            : this.state.firstName,
-        lastName:
-          this.state.lastName === ""
-            ? (this.state.lastName = "lastName")
-            : this.state.lastName,
-        email:
-          this.state.email === ""
-            ? (this.state.email = "test@gmail.com")
-            : this.state.email,
-        phone:
-          this.state.phone === ""
-            ? (this.state.phone = "phone")
-            : this.state.phone,
+      setFormData({
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+      });
+    }
+  }, [editingContact]);
+
+  const onFormSubmit = (event) => {
+    event.preventDefault();
+
+    if (!editingContact) {
+      onSubmit({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+      });
+      resetForm();
+    } else {
+      onEdit({
+        id: formData.id,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
       });
     }
   };
 
-  onFormReset = (event) => {
-    event.preventDefault();
-    this.resetForm();
-  };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.editingContact !== prevProps.editingContact) {
-      if (this.props.editingContact !== null) {
-        const { id, firstName, lastName, email, phone } =
-          this.props.editingContact;
-        this.setState({
-          id,
-          firstName,
-          lastName,
-          email,
-          phone,
-        });
-      } else {
-        this.resetForm();
-      }
-    }
-  }
-
-  resetForm = () => {
-    this.setState({
+  const resetForm = () => {
+    setFormData({
       id: "",
       firstName: "",
       lastName: "",
@@ -89,79 +62,81 @@ export class ContactForm extends Component {
     });
   };
 
-  deleteInput = (event) => {
+  const deleteInput = (event) => {
     const input = event.target.closest("div").querySelector("input");
-
     if (input) {
-      input.value = "";
-      this.setState({ [input.name]: "" });
+      setFormData((prev) => ({ ...prev, [input.name]: "" }));
     }
   };
 
-  onInputChange = (event) => {
+  const onInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  render() {
-    return (
-      <form
-        className="container"
-        id="Form"
-        onSubmit={this.onFormSubmit}
-        onReset={this.onFormReset}
-      >
-        <div className="area">
-          <input
-            type="text"
-            name="firstName"
-            value={this.state.firstName}
-            placeholder="firstName"
-            onChange={this.onInputChange}
-          />
-          <button type="button" className="btn" onClick={this.deleteInput}>
-            X
-          </button>
-        </div>
-        <div className="area">
-          <input
-            type="text"
-            name="lastName"
-            placeholder="lastName"
-            value={this.state.lastName}
-            onChange={this.onInputChange}
-          />
-          <button type="button" className="btn" onClick={this.deleteInput}>
-            X
-          </button>
-        </div>
-        <div className="area">
-          <input
-            type="email"
-            name="email"
-            placeholder="email"
-            value={this.state.email}
-            onChange={this.onInputChange}
-          />
-          <button type="button" className="btn" onClick={this.deleteInput}>
-            X
-          </button>
-        </div>
-        <div className="area">
-          <input
-            type="text"
-            name="phone"
-            placeholder="phone"
-            value={this.state.phone}
-            onChange={this.onInputChange}
-          />
-          <button type="button" className="btn" onClick={this.deleteInput}>
-            X
-          </button>
-        </div>
-      </form>
-    );
-  }
-}
+  return (
+    <form
+      className="container"
+      id="Form"
+      onSubmit={onFormSubmit}
+      onReset={(e) => {
+        e.preventDefault();
+        resetForm();
+      }}
+    >
+      <div className="area">
+        <input
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          placeholder="firstName"
+          onChange={onInputChange}
+        />
+        <button type="button" className="btn" onClick={deleteInput}>
+          X
+        </button>
+      </div>
+
+      <div className="area">
+        <input
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          placeholder="lastName"
+          onChange={onInputChange}
+        />
+        <button type="button" className="btn" onClick={deleteInput}>
+          X
+        </button>
+      </div>
+
+      <div className="area">
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          placeholder="email"
+          onChange={onInputChange}
+        />
+        <button type="button" className="btn" onClick={deleteInput}>
+          X
+        </button>
+      </div>
+
+      <div className="area">
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          placeholder="phone"
+          onChange={onInputChange}
+        />
+        <button type="button" className="btn" onClick={deleteInput}>
+          X
+        </button>
+      </div>
+    </form>
+  );
+};
 
 export default ContactForm;

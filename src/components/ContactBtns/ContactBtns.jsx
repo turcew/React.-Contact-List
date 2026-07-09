@@ -1,41 +1,35 @@
-import React, { Component } from "react";
-
+import React from "react";
 import "./ContactBtns.css";
 
-export class ContactBtns extends Component {
-  deleteClickHandler = () => {
-    this.props.onRemove(this.props.editingContact.id);
+const ContactBtns = ({ editingContact, onRemove, onNewClick }) => {
+  const deleteClickHandler = () => {
+    if (editingContact?.id) {
+      onRemove(editingContact.id);
+    }
   };
 
-  render() {
-    const { editingContact } = this.props;
-    return (
-      <div className="btns">
+  return (
+    <div className="btns">
+      <button className="btn1" form="Form" type="reset" onClick={onNewClick}>
+        New
+      </button>
+
+      <button className="btn1" form="Form">
+        Save
+      </button>
+
+      {editingContact?.id && (
         <button
           className="btn1"
           form="Form"
           type="reset"
-          onClick={this.props.onNewClick}
+          onClick={deleteClickHandler}
         >
-          New
+          Delete
         </button>
-        <button className="btn1" form="Form">
-          Save
-        </button>
-
-        {editingContact && editingContact.id && (
-          <button
-            className="btn1"
-            form="Form"
-            type="reset"
-            onClick={this.deleteClickHandler}
-          >
-            Delete
-          </button>
-        )}
-      </div>
-    );
-  }
-}
+      )}
+    </div>
+  );
+};
 
 export default ContactBtns;

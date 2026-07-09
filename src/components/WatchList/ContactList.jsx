@@ -1,24 +1,19 @@
-import React, { Component } from "react";
+import React from "react";
 import ContactItem from "../WatchItem/ContactItem";
-import ContactForm from "../WatchForm/ContactForm";
 
-export class ContactList extends Component {
-  render() {
-    return (
-      <div>
-        {this.props.contacts.map((contact) => {
-          return (
-            <ContactItem
-              key={contact.id}
-              contact={contact}
-              onRemove={this.props.onRemove}
-              onEdit={this.props.onEdit}
-            />
-          );
-        })}
-      </div>
-    );
-  }
-}
+const ContactList = ({ contacts, onRemove, onEdit }) => {
+  return (
+    <div>
+      {contacts.map((contact) => (
+        <ContactItem
+          key={contact.id}
+          contact={contact}
+          onRemove={onRemove}
+          onEdit={onEdit}
+        />
+      ))}
+    </div>
+  );
+};
 
 export default ContactList;
