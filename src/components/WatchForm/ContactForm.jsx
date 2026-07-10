@@ -13,11 +13,11 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
   useEffect(() => {
     if (editingContact) {
       setFormData({
-        id: editingContact.id || "",
-        firstName: editingContact.firstName || "",
-        lastName: editingContact.lastName || "",
-        email: editingContact.email || "",
-        phone: editingContact.phone || "",
+        id: editingContact.id,
+        firstName: editingContact.firstName,
+        lastName: editingContact.lastName,
+        email: editingContact.email,
+        phone: editingContact.phone,
       });
     } else {
       setFormData({
