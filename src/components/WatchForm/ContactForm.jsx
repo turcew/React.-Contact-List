@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./ContactForm.css";
 
 const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
   const [formData, setFormData] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    ...editingContact,
   });
 
   useEffect(() => {
@@ -20,34 +16,21 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
         phone: editingContact.phone,
       });
     } else {
-      setFormData({
-        id: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-      });
+      resetForm();
     }
   }, [editingContact]);
 
   const onFormSubmit = (event) => {
     event.preventDefault();
 
-    if (!editingContact) {
+    if (editingContact.id === "") {
       onSubmit({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
+        ...formData,
       });
       resetForm();
     } else {
       onEdit({
-        id: formData.id,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phone: formData.phone,
+        ...formData,
       });
     }
   };

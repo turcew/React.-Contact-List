@@ -1,4 +1,3 @@
-import React from "react";
 import "./ContactBtns.css";
 
 const ContactBtns = ({ editingContact, onRemove, onNewClick }) => {
@@ -19,12 +18,7 @@ const ContactBtns = ({ editingContact, onRemove, onNewClick }) => {
       </button>
 
       {editingContact?.id && (
-        <button
-          className="btn1"
-          form="Form"
-          type="reset"
-          onClick={deleteClickHandler}
-        >
+        <button className="btn1" form="Form" onClick={deleteClickHandler}>
           Delete
         </button>
       )}

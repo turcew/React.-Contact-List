@@ -1,9 +1,7 @@
-import React from "react";
 import "./ContactItem.css";
 
 const ContactItem = ({ contact, onRemove, onEdit }) => {
   const onContactDelete = (event) => {
-    event.stopPropagation();
     onRemove(contact.id);
   };
 

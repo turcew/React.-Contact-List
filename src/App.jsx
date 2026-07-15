@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 import ContactList from "./components/WatchList/ContactList";
@@ -8,12 +8,18 @@ import { nanoid } from "nanoid";
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
-  const [currentContact, setCurrentContact] = useState(null);
+  const [currentContact, setCurrentContact] = useState({
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+  });
 
   useEffect(() => {
-    const savedContacts = localStorage.getItem("contacts");
+    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
     if (savedContacts) {
-      setContacts(JSON.parse(savedContacts));
+      setContacts(savedContacts);
     }
   }, []);
 
@@ -24,13 +30,18 @@ const App = () => {
   const removeContact = (id) => {
     const updatedContacts = contacts.filter((contact) => contact.id !== id);
     setContacts(updatedContacts);
-    setCurrentContact(null);
+    setCurrentContact({
+      id: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    });
     saveContacts(updatedContacts);
   };
 
   const addContact = (newContact) => {
-    const contactWithId = { ...newContact, id: nanoid() };
-    const updatedContacts = [...contacts, contactWithId];
+    const updatedContacts = [...contacts, { ...newContact, id: nanoid() }];
     setContacts(updatedContacts);
     saveContacts(updatedContacts);
   };
@@ -48,7 +59,13 @@ const App = () => {
   };
 
   const newContact = () => {
-    setCurrentContact(null);
+    setCurrentContact({
+      id: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    });
   };
 
   return (

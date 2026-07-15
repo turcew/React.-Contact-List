@@ -1,4 +1,3 @@
-import React from "react";
 import ContactItem from "../WatchItem/ContactItem";
 
 const ContactList = ({ contacts, onRemove, onEdit }) => {
