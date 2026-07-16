@@ -3,6 +3,12 @@
   width: 400px;
 }
 
+.container.edit {
+  outline: solid;
+  width: 400px;
+  background-color: darkblue;
+}
+
 button {
   width: 50px;
 }

@@ -66,6 +66,7 @@ const App = () => {
           contacts={contacts}
           onRemove={removeContact}
           onEdit={handleEditClick}
+          editContactId={currentContact.id}
         />
         <ContactForm
           onSubmit={addContact}

@@ -1,6 +1,12 @@
 import "./ContactItem.css";
 
-const ContactItem = ({ contact, onRemove, onEdit }) => {
+function editBackground(contactId, editId) {
+  return {
+    backgroundColor: contactId === editId ? "darkblue" : "",
+  };
+}
+
+const ContactItem = ({ contact, editId, onRemove, onEdit }) => {
   const onContactDelete = (event) => {
     onRemove(contact.id);
   };
@@ -10,7 +16,11 @@ const ContactItem = ({ contact, onRemove, onEdit }) => {
   };
 
   return (
-    <div className="container" onDoubleClick={handleDoubleClick}>
+    <div
+      className="container"
+      style={editBackground(contact.id, editId)}
+      onDoubleClick={handleDoubleClick}
+    >
       <div className="item">
         <p>{contact.firstName}</p>
         <p>{contact.lastName}</p>
