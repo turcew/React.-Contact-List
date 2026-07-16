@@ -6,15 +6,17 @@ import ContactForm from "./components/WatchForm/ContactForm";
 import ContactBtns from "./components/ContactBtns/ContactBtns";
 import { nanoid } from "nanoid";
 
+const INITIAL_CONTACT = {
+  id: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+};
+
 const App = () => {
   const [contacts, setContacts] = useState([]);
-  const [currentContact, setCurrentContact] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  });
+  const [currentContact, setCurrentContact] = useState(INITIAL_CONTACT);
 
   useEffect(() => {
     const savedContacts = JSON.parse(localStorage.getItem("contacts"));
@@ -30,13 +32,7 @@ const App = () => {
   const removeContact = (id) => {
     const updatedContacts = contacts.filter((contact) => contact.id !== id);
     setContacts(updatedContacts);
-    setCurrentContact({
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
+    setCurrentContact(INITIAL_CONTACT);
     saveContacts(updatedContacts);
   };
 
@@ -59,13 +55,7 @@ const App = () => {
   };
 
   const newContact = () => {
-    setCurrentContact({
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
+    setCurrentContact(INITIAL_CONTACT);
   };
 
   return (

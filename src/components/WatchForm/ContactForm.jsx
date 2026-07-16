@@ -9,11 +9,7 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
   useEffect(() => {
     if (editingContact) {
       setFormData({
-        id: editingContact.id,
-        firstName: editingContact.firstName,
-        lastName: editingContact.lastName,
-        email: editingContact.email,
-        phone: editingContact.phone,
+        ...editingContact,
       });
     } else {
       resetForm();
@@ -37,11 +33,7 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
 
   const resetForm = () => {
     setFormData({
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
+      ...editingContact,
     });
   };
 
