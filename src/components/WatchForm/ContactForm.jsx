@@ -7,19 +7,15 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
   });
 
   useEffect(() => {
-    if (editingContact) {
-      setFormData({
-        ...editingContact,
-      });
-    } else {
-      resetForm();
-    }
+    setFormData({
+      ...editingContact,
+    });
   }, [editingContact]);
 
   const onFormSubmit = (event) => {
     event.preventDefault();
 
-    if (editingContact.id === "") {
+    if (!editingContact.id) {
       onSubmit({
         ...formData,
       });
@@ -33,7 +29,10 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
 
   const resetForm = () => {
     setFormData({
-      ...editingContact,
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
     });
   };
 

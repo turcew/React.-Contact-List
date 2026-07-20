@@ -4,10 +4,11 @@ import "./App.css";
 import ContactList from "./components/WatchList/ContactList";
 import ContactForm from "./components/WatchForm/ContactForm";
 import ContactBtns from "./components/ContactBtns/ContactBtns";
-import { nanoid } from "nanoid";
+// import { nanoid } from "nanoid";
+import api from "./api/contact-service";
 
 const INITIAL_CONTACT = {
-  id: "",
+  id: null,
   firstName: "",
   lastName: "",
   email: "",
@@ -15,39 +16,47 @@ const INITIAL_CONTACT = {
 };
 
 const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [arrContacts, setArrContacts] = useState([]);
   const [currentContact, setCurrentContact] = useState(INITIAL_CONTACT);
 
   useEffect(() => {
-    const savedContacts = JSON.parse(localStorage.getItem("contacts"));
-    if (savedContacts) {
-      setContacts(savedContacts);
-    }
+    api.get("/").then(({ data }) => {
+      if (!data) {
+        setArrContacts([]);
+      } else {
+        setArrContacts(data);
+      }
+    });
   }, []);
 
-  const saveContacts = (updatedContacts) => {
-    localStorage.setItem("contacts", JSON.stringify(updatedContacts));
-  };
-
   const removeContact = (id) => {
-    const updatedContacts = contacts.filter((contact) => contact.id !== id);
-    setContacts(updatedContacts);
+    api.delete(`/${id}`);
+    const newContacts = arrContacts.filter((contact) => contact.id !== id);
+    setArrContacts(newContacts);
     setCurrentContact(INITIAL_CONTACT);
-    saveContacts(updatedContacts);
   };
 
   const addContact = (newContact) => {
-    const updatedContacts = [...contacts, { ...newContact, id: nanoid() }];
-    setContacts(updatedContacts);
-    saveContacts(updatedContacts);
+    api.post("/", newContact).then(({ data }) => {
+      const newContacts = [...arrContacts, data];
+      setArrContacts(newContacts);
+    });
   };
 
   const editContact = (editedContact) => {
-    const updatedContacts = contacts.map((contact) =>
-      contact.id === editedContact.id ? editedContact : contact,
+    const updatedContact = arrContacts.find(
+      (contact) => contact.id === editedContact.id,
     );
-    setContacts(updatedContacts);
-    saveContacts(updatedContacts);
+    api
+      .put(`/${updatedContact.id}`, editedContact)
+      .then(({ data }) => {
+        setArrContacts(
+          arrContacts.map((contact) => {
+            return contact.id !== editedContact.id ? contact : data;
+          }),
+        );
+      })
+      .catch((error) => console.log(error));
   };
 
   const handleEditClick = (contact) => {
@@ -63,7 +72,7 @@ const App = () => {
       <h1>Contact list</h1>
       <div className="items">
         <ContactList
-          contacts={contacts}
+          contacts={arrContacts}
           onRemove={removeContact}
           onEdit={handleEditClick}
           editContactId={currentContact.id}

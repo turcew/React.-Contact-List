@@ -1,0 +1,12 @@
+{
+  "contacts": [
+    {
+      "id": "Y9H4_ITyGYo",
+      "firstName": "test",
+      "lastName": "contact",
+      "email": "test@gmail.com",
+      "phone": "+123456789"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
