@@ -44,11 +44,8 @@ const App = () => {
   };
 
   const editContact = (editedContact) => {
-    const updatedContact = arrContacts.find(
-      (contact) => contact.id === editedContact.id,
-    );
     api
-      .put(`/${updatedContact.id}`, editedContact)
+      .put(`/${editedContact.id}`, editedContact)
       .then(({ data }) => {
         setArrContacts(
           arrContacts.map((contact) => {
