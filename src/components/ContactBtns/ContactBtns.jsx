@@ -1,9 +1,41 @@
+import {
+  editContact,
+  delContact,
+  addContact,
+} from "../../store/actions/contactActions";
+import { clearInfo } from "../../store/actions/currentContactActions";
+import api from "../../api/contact-service";
+import { useDispatch, useSelector } from "react-redux";
+
 import "./ContactBtns.css";
 
-const ContactBtns = ({ editingContact, onRemove, onNewClick }) => {
-  const deleteClickHandler = () => {
-    if (editingContact?.id) {
-      onRemove(editingContact.id);
+const ContactBtns = () => {
+  const dispatch = useDispatch();
+
+  const currentContact = useSelector(
+    (state) => state.currentContactList.currentContact,
+  );
+
+  const onNewClick = () => {
+    dispatch(clearInfo());
+  };
+
+  const onDeleteClick = () => {
+    api
+      .delete(`/contacts/${currentContact.id}`)
+      .then(({ statusText }) => console.log(statusText));
+    dispatch(delContact(currentContact.id));
+  };
+
+  const onSaveClick = () => {
+    if (!currentContact.id) {
+      api
+        .post("/contacts", currentContact)
+        .then(({ data }) => dispatch(addContact(data)));
+    } else {
+      api
+        .put(`/contacts/${currentContact.id}`, currentContact)
+        .then(({ data }) => dispatch(editContact(data)));
     }
   };
 
@@ -13,12 +45,12 @@ const ContactBtns = ({ editingContact, onRemove, onNewClick }) => {
         New
       </button>
 
-      <button className="btn1" form="Form">
+      <button className="btn1" form="Form" type="submit" onClick={onSaveClick}>
         Save
       </button>
 
-      {editingContact?.id && (
-        <button className="btn1" form="Form" onClick={deleteClickHandler}>
+      {currentContact.id && (
+        <button className="btn1" form="Form" onClick={onDeleteClick}>
           Delete
         </button>
       )}

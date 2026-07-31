@@ -1,40 +1,34 @@
-import { useState, useEffect } from "react";
 import "./ContactForm.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearInfo,
+  changeInfo,
+} from "../../store/actions/currentContactActions";
+import { useEffect, useState } from "react";
 
-const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+
+  const currentContact = useSelector(
+    (state) => state.currentContactList.currentContact,
+  );
+
   const [formData, setFormData] = useState({
-    ...editingContact,
+    id: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
   });
 
   useEffect(() => {
     setFormData({
-      ...editingContact,
+      firstName: currentContact.firstName,
+      lastName: currentContact.lastName,
+      email: currentContact.email,
+      phone: currentContact.phone,
     });
-  }, [editingContact]);
-
-  const onFormSubmit = (event) => {
-    event.preventDefault();
-
-    if (!editingContact.id) {
-      onSubmit({
-        ...formData,
-      });
-      resetForm();
-    } else {
-      onEdit({
-        ...formData,
-      });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
-  };
+  }, [currentContact]);
 
   const deleteInput = (event) => {
     const input = event.target.closest("div").querySelector("input");
@@ -43,9 +37,44 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
     }
   };
 
+  // const onInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   switch (name) {
+  //     case "firstName":
+  //       dispatch(changeFirstName(value));
+  //       break;
+  //     case "lastName":
+  //       dispatch(changeLastName(value));
+  //       break;
+  //     case "email":
+  //       dispatch(changeEmail(value));
+  //       break;
+  //     case "phone":
+  //       dispatch(changePhone(value));
+  //   }
+  // };
+
+  const onFormSubmit = (event) => {
+    event.preventDefault();
+    if (!currentContact.id) {
+      dispatch(clearInfo());
+      dispatch(changeInfo(formData));
+    }
+  };
+
   const onInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      id: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+    });
   };
 
   return (
@@ -53,10 +82,7 @@ const ContactForm = ({ editingContact, onSubmit, onEdit }) => {
       className="container"
       id="Form"
       onSubmit={onFormSubmit}
-      onReset={(e) => {
-        e.preventDefault();
-        resetForm();
-      }}
+      onReset={resetForm}
     >
       <div className="area">
         <input

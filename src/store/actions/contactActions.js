@@ -1,27 +1,29 @@
+import ACTION_TYPES from "./actionTypes";
+
 export const addContact = (contact) => {
   return {
-    type: "addContact",
+    type: ACTION_TYPES.ADD_CONTACT,
     payload: contact,
   };
 };
 
 export const delContact = (id) => {
   return {
-    type: "delContact",
+    type: ACTION_TYPES.DELETE_CONTACT,
     payload: id,
   };
 };
 
 export const editContact = (contact) => {
   return {
-    type: "editContact",
+    type: ACTION_TYPES.EDIT_CONTACT,
     payload: contact,
   };
 };
 
 export const getContacts = (contacts) => {
   return {
-    type: "getContacts",
+    type: ACTION_TYPES.GET_CONTACTS,
     payload: contacts,
   };
 };

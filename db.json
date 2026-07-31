@@ -1,11 +1,25 @@
 {
   "contacts": [
     {
-      "id": "Y9H4_ITyGYo",
-      "firstName": "test",
+      "id": "2",
+      "firstName": "test2",
       "lastName": "contact",
       "email": "test@gmail.com",
       "phone": "+123456789"
+    },
+    {
+      "id": "fU9S2MP3SGU",
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "phone": ""
+    },
+    {
+      "id": "liJVcHT_WfY",
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "phone": ""
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
