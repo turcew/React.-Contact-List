@@ -10,6 +10,5 @@ export const changeInfo = (value) => {
 export const clearInfo = () => {
   return {
     type: ACTION_TYPES.CLEAR_INFO,
-    payload: "",
   };
 };

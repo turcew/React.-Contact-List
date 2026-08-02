@@ -2,7 +2,6 @@ import "./App.css";
 
 import ContactList from "./components/WatchList/ContactList";
 import ContactForm from "./components/WatchForm/ContactForm";
-import ContactBtns from "./components/ContactBtns/ContactBtns";
 // import { nanoid } from "nanoid";
 // import api from "./api/contact-service";
 
@@ -22,7 +21,6 @@ const App = () => {
         <ContactList />
         <ContactForm />
       </div>
-      <ContactBtns />
     </div>
   );
 };

@@ -1,10 +1,17 @@
 import "./ContactForm.css";
+
+import {
+  editContact,
+  delContact,
+  addContact,
+} from "../../store/actions/contactActions";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  clearInfo,
   changeInfo,
+  clearInfo,
 } from "../../store/actions/currentContactActions";
 import { useEffect, useState } from "react";
+import api from "../../api/contact-service";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -23,10 +30,7 @@ const ContactForm = () => {
 
   useEffect(() => {
     setFormData({
-      firstName: currentContact.firstName,
-      lastName: currentContact.lastName,
-      email: currentContact.email,
-      phone: currentContact.phone,
+      ...currentContact,
     });
   }, [currentContact]);
 
@@ -37,28 +41,21 @@ const ContactForm = () => {
     }
   };
 
-  // const onInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   switch (name) {
-  //     case "firstName":
-  //       dispatch(changeFirstName(value));
-  //       break;
-  //     case "lastName":
-  //       dispatch(changeLastName(value));
-  //       break;
-  //     case "email":
-  //       dispatch(changeEmail(value));
-  //       break;
-  //     case "phone":
-  //       dispatch(changePhone(value));
-  //   }
-  // };
-
-  const onFormSubmit = (event) => {
+  const onSaveClick = (event) => {
     event.preventDefault();
-    if (!currentContact.id) {
-      dispatch(clearInfo());
-      dispatch(changeInfo(formData));
+
+    if (!formData.id) {
+      api.post("/contacts", formData).then(({ data }) => {
+        dispatch(addContact(data));
+        dispatch(changeInfo(data));
+        dispatch(clearInfo());
+      });
+      resetForm();
+    } else {
+      api.put(`/contacts/${formData.id}`, formData).then(({ data }) => {
+        dispatch(editContact(data));
+        dispatch(changeInfo(data));
+      });
     }
   };
 
@@ -67,6 +64,10 @@ const ContactForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const onNewClick = () => {
+    dispatch(clearInfo());
+    resetForm();
+  };
   const resetForm = () => {
     setFormData({
       id: "",
@@ -77,13 +78,18 @@ const ContactForm = () => {
     });
   };
 
+  const onDeleteClick = (e) => {
+    e.preventDefault();
+    if (!formData.id) return;
+
+    api.delete(`/contacts/${formData.id}`).then(() => {
+      dispatch(delContact(formData.id));
+      dispatch(clearInfo());
+    });
+  };
+
   return (
-    <form
-      className="container"
-      id="Form"
-      onSubmit={onFormSubmit}
-      onReset={resetForm}
-    >
+    <form className="container" id="Form">
       <div className="area">
         <input
           type="text"
@@ -134,6 +140,26 @@ const ContactForm = () => {
         <button type="button" className="btn" onClick={deleteInput}>
           X
         </button>
+      </div>
+      <div className="btns">
+        <button className="btn1" form="Form" type="reset" onClick={onNewClick}>
+          New
+        </button>
+
+        <button
+          className="btn1"
+          form="Form"
+          type="submit"
+          onClick={onSaveClick}
+        >
+          Save
+        </button>
+
+        {currentContact.id && (
+          <button className="btn1" form="Form" onClick={onDeleteClick}>
+            Delete
+          </button>
+        )}
       </div>
     </form>
   );

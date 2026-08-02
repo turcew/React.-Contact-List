@@ -1,20 +1,27 @@
 import "./ContactItem.css";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { delContact } from "../../store/actions/contactActions";
 import api from "../../api/contact-service";
-import { changeInfo } from "../../store/actions/currentContactActions";
+import {
+  changeInfo,
+  clearInfo,
+} from "../../store/actions/currentContactActions";
 
-// function editBackground(contactId, editId) {
-//   return {
-//     backgroundColor: contactId === editId ? "darkblue" : "",
-//   };
-// }
+function editBackground(contactId, editId) {
+  return {
+    backgroundColor: contactId === editId ? "darkblue" : "",
+  };
+}
 
 const ContactItem = ({ contact }) => {
   const { id, firstName, lastName } = contact;
 
   const dispatch = useDispatch();
+
+  const currentContact = useSelector(
+    (state) => state.currentContactList.currentContact,
+  );
 
   const onContactDelete = () => {
     api
@@ -22,19 +29,17 @@ const ContactItem = ({ contact }) => {
       .then(({ statusText }) => console.log(statusText))
       .catch((error) => console.log(error));
     dispatch(delContact(id));
+    dispatch(clearInfo());
   };
 
   const onContactEdit = () => {
-    // api
-    //   .put(`/contacts/${contact.id}`, contact)
-    //   .then(({ data }) => dispatch(editContact(data)));
     dispatch(changeInfo(contact));
   };
 
   return (
     <div
       className="container"
-      // style={editBackground(contact.id, editId)}
+      style={editBackground(contact.id, currentContact.id)}
       onDoubleClick={onContactEdit}
     >
       <div className="item">

@@ -5,5 +5,5 @@ import Inspect from "vite-plugin-inspect";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), Inspect()],
-  server: { port: 3000 },
+  server: { port: 3000, open: true },
 });
