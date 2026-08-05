@@ -3,14 +3,16 @@ import { useEffect } from "react";
 
 import ContactItem from "../WatchItem/ContactItem";
 
-import { getContactsAction } from "../../store/actions/contactActions";
+import { getContacts } from "../../store/actions/contactActions";
+import api from "../../api/contact-service";
 
 const ContactList = () => {
   const dispatch = useDispatch();
 
   const contacts = useSelector((state) => state.contactsList.contacts);
+
   useEffect(() => {
-    dispatch(getContactsAction());
+    api.get("/contacts").then(({ data }) => dispatch(getContacts(data)));
   }, [dispatch]);
   return (
     <div>
