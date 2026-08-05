@@ -1,8 +1,7 @@
 import "./ContactItem.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import { delContact } from "../../store/actions/contactActions";
-import api from "../../api/contact-service";
+import { delContactAction } from "../../store/actions/contactActions";
 import {
   changeInfo,
   clearInfo,
@@ -24,11 +23,7 @@ const ContactItem = ({ contact }) => {
   );
 
   const onContactDelete = () => {
-    api
-      .delete(`/contacts/${id}`)
-      .then(({ statusText }) => console.log(statusText))
-      .catch((error) => console.log(error));
-    dispatch(delContact(id));
+    dispatch(delContactAction(id));
     dispatch(clearInfo());
   };
 
