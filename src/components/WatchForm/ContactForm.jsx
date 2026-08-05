@@ -1,9 +1,9 @@
 import "./ContactForm.css";
 
 import {
-  editContact,
-  delContact,
-  addContact,
+  editContactAction,
+  delContactAction,
+  addContactAction,
 } from "../../store/actions/contactActions";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,7 +11,6 @@ import {
   clearInfo,
 } from "../../store/actions/currentContactActions";
 import { useEffect, useState } from "react";
-import api from "../../api/contact-service";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
@@ -45,17 +44,12 @@ const ContactForm = () => {
     event.preventDefault();
 
     if (!formData.id) {
-      api.post("/contacts", formData).then(({ data }) => {
-        dispatch(addContact(data));
-        dispatch(changeInfo(data));
-        dispatch(clearInfo());
-      });
+      dispatch(addContactAction(formData));
+      dispatch(clearInfo());
       resetForm();
     } else {
-      api.put(`/contacts/${formData.id}`, formData).then(({ data }) => {
-        dispatch(editContact(data));
-        dispatch(changeInfo(data));
-      });
+      dispatch(editContactAction(formData));
+      dispatch(changeInfo(formData));
     }
   };
 
@@ -80,12 +74,10 @@ const ContactForm = () => {
 
   const onDeleteClick = (e) => {
     e.preventDefault();
-    if (!formData.id) return;
-
-    api.delete(`/contacts/${formData.id}`).then(() => {
-      dispatch(delContact(formData.id));
+    if (formData.id) {
+      dispatch(delContactAction(formData.id));
       dispatch(clearInfo());
-    });
+    }
   };
 
   return (
