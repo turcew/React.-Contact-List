@@ -4,20 +4,16 @@ import {
   editContact,
   delContact,
   addContact,
-} from "../../store/actions/contactActions";
+  clearCurrentContact,
+} from "../../store/slices/contactSlice";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  changeInfo,
-  clearInfo,
-} from "../../store/actions/currentContactActions";
 import { useEffect, useState } from "react";
-import api from "../../api/contact-service";
 
 const ContactForm = () => {
   const dispatch = useDispatch();
 
   const currentContact = useSelector(
-    (state) => state.currentContactList.currentContact,
+    (state) => state.contactList.currentContact,
   );
 
   const [formData, setFormData] = useState({
@@ -45,17 +41,12 @@ const ContactForm = () => {
     event.preventDefault();
 
     if (!formData.id) {
-      api.post("/contacts", formData).then(({ data }) => {
-        dispatch(addContact(data));
-        dispatch(changeInfo(data));
-        dispatch(clearInfo());
-      });
+      dispatch(addContact(formData));
+      dispatch(clearCurrentContact());
       resetForm();
     } else {
-      api.put(`/contacts/${formData.id}`, formData).then(({ data }) => {
-        dispatch(editContact(data));
-        dispatch(changeInfo(data));
-      });
+      dispatch(editContact(formData));
+      dispatch(clearCurrentContact());
     }
   };
 
@@ -65,7 +56,7 @@ const ContactForm = () => {
   };
 
   const onNewClick = () => {
-    dispatch(clearInfo());
+    dispatch(clearCurrentContact());
     resetForm();
   };
   const resetForm = () => {
@@ -82,10 +73,8 @@ const ContactForm = () => {
     e.preventDefault();
     if (!formData.id) return;
 
-    api.delete(`/contacts/${formData.id}`).then(() => {
-      dispatch(delContact(formData.id));
-      dispatch(clearInfo());
-    });
+    dispatch(delContact(formData.id));
+    dispatch(clearCurrentContact());
   };
 
   return (

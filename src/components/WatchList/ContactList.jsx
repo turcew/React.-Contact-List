@@ -3,16 +3,15 @@ import { useEffect } from "react";
 
 import ContactItem from "../WatchItem/ContactItem";
 
-import { getContacts } from "../../store/actions/contactActions";
-import api from "../../api/contact-service";
+import { getContacts } from "../../store/slices/contactSlice";
 
 const ContactList = () => {
   const dispatch = useDispatch();
 
-  const contacts = useSelector((state) => state.contactsList.contacts);
+  const contacts = useSelector((state) => state.contactList.contacts);
 
   useEffect(() => {
-    api.get("/contacts").then(({ data }) => dispatch(getContacts(data)));
+    dispatch(getContacts());
   }, [dispatch]);
   return (
     <div>
@@ -22,11 +21,5 @@ const ContactList = () => {
     </div>
   );
 };
-
-// const mapStateToProps = ({ contacts }) => ({ contacts });
-
-// const mapDispatchToProps = {
-//   getContacts,
-// };
 
 export default ContactList;

@@ -1,12 +1,11 @@
 import "./ContactItem.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import { delContact } from "../../store/actions/contactActions";
-import api from "../../api/contact-service";
 import {
-  changeInfo,
-  clearInfo,
-} from "../../store/actions/currentContactActions";
+  delContact,
+  clearCurrentContact,
+  changeCurrentContact,
+} from "../../store/slices/contactSlice";
 
 function editBackground(contactId, editId) {
   return {
@@ -20,20 +19,16 @@ const ContactItem = ({ contact }) => {
   const dispatch = useDispatch();
 
   const currentContact = useSelector(
-    (state) => state.currentContactList.currentContact,
+    (state) => state.contactList.currentContact,
   );
 
   const onContactDelete = () => {
-    api
-      .delete(`/contacts/${id}`)
-      .then(({ statusText }) => console.log(statusText))
-      .catch((error) => console.log(error));
     dispatch(delContact(id));
-    dispatch(clearInfo());
+    dispatch(clearCurrentContact());
   };
 
   const onContactEdit = () => {
-    dispatch(changeInfo(contact));
+    dispatch(changeCurrentContact(id));
   };
 
   return (
