@@ -9,6 +9,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
+const emptyContact = {
+  id: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+};
+
 const ContactForm = () => {
   const dispatch = useDispatch();
 
@@ -17,11 +25,7 @@ const ContactForm = () => {
   );
 
   const [formData, setFormData] = useState({
-    id: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
+    emptyContact,
   });
 
   useEffect(() => {
@@ -43,10 +47,8 @@ const ContactForm = () => {
     if (!formData.id) {
       dispatch(addContact(formData));
       dispatch(clearCurrentContact());
-      resetForm();
     } else {
       dispatch(editContact(formData));
-      dispatch(clearCurrentContact());
     }
   };
 
@@ -60,13 +62,7 @@ const ContactForm = () => {
     resetForm();
   };
   const resetForm = () => {
-    setFormData({
-      id: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-    });
+    setFormData(emptyContact);
   };
 
   const onDeleteClick = (e) => {

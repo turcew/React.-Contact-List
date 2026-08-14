@@ -49,14 +49,12 @@ export const delContact = createAsyncThunk(
 
 export const editContact = createAsyncThunk(
   `${CONTACT_SLICE_NAME}/editContact`,
-  async (newContact, { rejectWithValue, dispatch, getState }) => {
-    const contact = getState().contactList.contacts.find(
-      (contact) => contact.id === newContact.id,
-    );
+  async (newContact, { rejectWithValue, dispatch }) => {
     try {
-      const response = await api.patch(`/${CONTACT_SLICE_NAME}/${contact.id}`, {
-        ...newContact,
-      });
+      const response = await api.patch(
+        `/${CONTACT_SLICE_NAME}/${newContact.id}`,
+        newContact,
+      );
       if (response.status >= 400) {
         throw new Error(
           `Cannot edit contact. Error status is ${response.status}`,
