@@ -7,7 +7,8 @@ import {
   clearCurrentContact,
 } from "../../store/slices/contactSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import * as Yup from "yup";
 
 const emptyContact = {
   id: "",
@@ -17,6 +18,21 @@ const emptyContact = {
   phone: "",
 };
 
+const schema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(3, "First name must be at least 3 characters")
+    .max(20, "First name must be at most 20 characters")
+    .required("First name is required"),
+  lastName: Yup.string()
+    .min(3, "Last name must be at least 3 characters")
+    .max(20, "Last name must be at most 20 characters")
+    .required("Last name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  phone: Yup.string()
+    .matches(/^\+?[\d\s\-()]{7,20}$/, "The phone number is incorrect")
+    .required("Phone is required"),
+});
+
 const ContactForm = () => {
   const dispatch = useDispatch();
 
@@ -24,129 +40,129 @@ const ContactForm = () => {
     (state) => state.contactList.currentContact,
   );
 
-  const [formData, setFormData] = useState({
-    emptyContact,
-  });
-
-  useEffect(() => {
-    setFormData({
-      ...currentContact,
-    });
-  }, [currentContact]);
-
-  const deleteInput = (event) => {
-    const input = event.target.closest("div").querySelector("input");
-    if (input) {
-      setFormData((prev) => ({ ...prev, [input.name]: "" }));
-    }
-  };
-
-  const onSaveClick = (event) => {
-    event.preventDefault();
-
-    if (!formData.id) {
-      dispatch(addContact(formData));
-      dispatch(clearCurrentContact());
+  const onFormSubmit = (values, { resetForm }) => {
+    if (!values.id) {
+      dispatch(addContact(values));
     } else {
-      dispatch(editContact(formData));
+      dispatch(editContact(values));
     }
-  };
-
-  const onInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const onNewClick = () => {
     dispatch(clearCurrentContact());
-    resetForm();
-  };
-  const resetForm = () => {
-    setFormData(emptyContact);
+    resetForm({ values: emptyContact });
   };
 
-  const onDeleteClick = (e) => {
-    e.preventDefault();
-    if (!formData.id) return;
-
-    dispatch(delContact(formData.id));
+  const handleNew = (resetForm) => {
     dispatch(clearCurrentContact());
+    resetForm({ values: emptyContact });
+  };
+
+  const handleDelete = (id, resetForm) => {
+    if (!id) return;
+    dispatch(delContact(id));
+    dispatch(clearCurrentContact());
+    resetForm({ values: emptyContact });
   };
 
   return (
-    <form className="container" id="Form">
-      <div className="area">
-        <input
-          type="text"
-          name="firstName"
-          value={formData.firstName}
-          placeholder="firstName"
-          onChange={onInputChange}
-        />
-        <button type="button" className="btn" onClick={deleteInput}>
-          X
-        </button>
-      </div>
+    <Formik
+      initialValues={currentContact?.id ? currentContact : emptyContact}
+      enableReinitialize
+      onSubmit={onFormSubmit}
+      validationSchema={schema}
+    >
+      {({ resetForm, values, setFieldValue }) => (
+        <Form className="container" id="Form">
+          <div className="area">
+            <Field
+              type="text"
+              name="firstName"
+              id="firstName"
+              placeholder="firstName"
+            />
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setFieldValue("firstName", "")}
+            >
+              X
+            </button>
+          </div>
+          <ErrorMessage name="firstName">
+            {(msg) => <div className="error">{msg}</div>}
+          </ErrorMessage>
 
-      <div className="area">
-        <input
-          type="text"
-          name="lastName"
-          value={formData.lastName}
-          placeholder="lastName"
-          onChange={onInputChange}
-        />
-        <button type="button" className="btn" onClick={deleteInput}>
-          X
-        </button>
-      </div>
+          <div className="area">
+            <Field
+              type="text"
+              name="lastName"
+              id="lastName"
+              placeholder="lastName"
+            />
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setFieldValue("lastName", "")}
+            >
+              X
+            </button>
+          </div>
+          <ErrorMessage name="lastName">
+            {(msg) => <div className="error">{msg}</div>}
+          </ErrorMessage>
 
-      <div className="area">
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          placeholder="email"
-          onChange={onInputChange}
-        />
-        <button type="button" className="btn" onClick={deleteInput}>
-          X
-        </button>
-      </div>
+          <div className="area">
+            <Field type="email" name="email" id="email" placeholder="email" />
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setFieldValue("email", "")}
+            >
+              X
+            </button>
+          </div>
+          <ErrorMessage name="email">
+            {(msg) => <div className="error">{msg}</div>}
+          </ErrorMessage>
 
-      <div className="area">
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          placeholder="phone"
-          onChange={onInputChange}
-        />
-        <button type="button" className="btn" onClick={deleteInput}>
-          X
-        </button>
-      </div>
-      <div className="btns">
-        <button className="btn1" form="Form" type="reset" onClick={onNewClick}>
-          New
-        </button>
+          <div className="area">
+            <Field type="text" name="phone" id="phone" placeholder="phone" />
+            <button
+              type="button"
+              className="btn"
+              onClick={() => setFieldValue("phone", "")}
+            >
+              X
+            </button>
+          </div>
+          <ErrorMessage name="phone">
+            {(msg) => <div className="error">{msg}</div>}
+          </ErrorMessage>
 
-        <button
-          className="btn1"
-          form="Form"
-          type="submit"
-          onClick={onSaveClick}
-        >
-          Save
-        </button>
+          <div className="btns">
+            <button
+              className="btn1"
+              type="button"
+              onClick={() => handleNew(resetForm)}
+            >
+              New
+            </button>
 
-        {currentContact.id && (
-          <button className="btn1" form="Form" onClick={onDeleteClick}>
-            Delete
-          </button>
-        )}
-      </div>
-    </form>
+            <button className="btn1" type="submit">
+              Save
+            </button>
+
+            {values.id && (
+              <button
+                className="btn1"
+                type="button"
+                onClick={() => handleDelete(values.id, resetForm)}
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
