@@ -81,6 +81,7 @@ const ContactForm = () => {
         handleBlur,
         setFieldValue,
         resetForm,
+        isValid,
       }) => (
         <Form>
           <Paper
@@ -204,6 +205,7 @@ const ContactForm = () => {
                 type="submit"
                 variant="contained"
                 startIcon={<SaveIcon />}
+                disabled={!isValid}
               >
                 Save
               </Button>
