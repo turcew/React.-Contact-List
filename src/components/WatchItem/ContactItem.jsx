@@ -1,5 +1,3 @@
-import "./ContactItem.css";
-
 import { useDispatch, useSelector } from "react-redux";
 import {
   delContact,
@@ -7,11 +5,8 @@ import {
   changeCurrentContact,
 } from "../../store/slices/contactSlice";
 
-function editBackground(contactId, editId) {
-  return {
-    backgroundColor: contactId === editId ? "darkblue" : "",
-  };
-}
+import { Paper, Box, Typography, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const ContactItem = ({ contact }) => {
   const { id, firstName, lastName } = contact;
@@ -22,7 +17,10 @@ const ContactItem = ({ contact }) => {
     (state) => state.contactList.currentContact,
   );
 
-  const onContactDelete = () => {
+  const isSelected = currentContact?.id === id;
+
+  const onContactDelete = (e) => {
+    e.stopPropagation();
     dispatch(delContact(id));
     dispatch(clearCurrentContact());
   };
@@ -32,17 +30,55 @@ const ContactItem = ({ contact }) => {
   };
 
   return (
-    <div
-      className="container"
-      style={editBackground(contact.id, currentContact.id)}
+    <Paper
+      elevation={isSelected ? 6 : 2}
       onDoubleClick={onContactEdit}
+      sx={{
+        width: 400,
+        mb: 1.5,
+        p: 1.5,
+        cursor: "pointer",
+        backgroundColor: isSelected ? "primary.dark" : "background.paper",
+        color: isSelected ? "primary.contrastText" : "text.primary",
+        transition: "all 0.2s ease",
+        "&:hover": {
+          elevation: 4,
+          backgroundColor: isSelected ? "primary.dark" : "action.hover",
+        },
+      }}
     >
-      <div className="item">
-        <p>{firstName}</p>
-        <p>{lastName}</p>
-        <button onClick={onContactDelete}>X</button>
-      </div>
-    </div>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 2, overflow: "hidden" }}>
+          <Typography variant="body1" noWrap fontWeight={500}>
+            {firstName}
+          </Typography>
+          <Typography variant="body1" noWrap>
+            {lastName}
+          </Typography>
+        </Box>
+
+        <IconButton
+          size="small"
+          onClick={onContactDelete}
+          sx={{
+            color: isSelected ? "primary.contrastText" : "error.main",
+            "&:hover": {
+              backgroundColor: isSelected
+                ? "rgba(255,255,255,0.15)"
+                : "error.light",
+            },
+          }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Box>
+    </Paper>
   );
 };
 

@@ -5,6 +5,8 @@ import ContactItem from "../WatchItem/ContactItem";
 
 import { getContacts } from "../../store/slices/contactSlice";
 
+import { Box, Typography } from "@mui/material";
+
 const ContactList = () => {
   const dispatch = useDispatch();
 
@@ -13,12 +15,19 @@ const ContactList = () => {
   useEffect(() => {
     dispatch(getContacts());
   }, [dispatch]);
+
   return (
-    <div>
-      {contacts.map((contact) => (
-        <ContactItem key={contact.id} contact={contact} />
-      ))}
-    </div>
+    <Box sx={{ mt: 2 }}>
+      {contacts.length === 0 ? (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+          No contacts yet
+        </Typography>
+      ) : (
+        contacts.map((contact) => (
+          <ContactItem key={contact.id} contact={contact} />
+        ))
+      )}
+    </Box>
   );
 };
 
