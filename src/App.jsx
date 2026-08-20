@@ -91,8 +91,8 @@ const App = () => {
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
               gap: 4,
-              justifyContent: "center",
-              alignItems: { xs: "center", md: "flex-start" },
+              justifycontent: "center",
+              alignitems: { xs: "center", md: "flex-start" },
             }}
           >
             <Box sx={{ flex: 1, maxWidth: 440 }}>

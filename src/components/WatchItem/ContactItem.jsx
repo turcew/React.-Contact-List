@@ -50,8 +50,8 @@ const ContactItem = ({ contact }) => {
       <Box
         sx={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          alignitems: "center",
+          justifycontent: "space-between",
         }}
       >
         <Box sx={{ display: "flex", gap: 2, overflow: "hidden" }}>

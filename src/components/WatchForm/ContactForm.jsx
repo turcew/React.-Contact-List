@@ -94,7 +94,7 @@ const ContactForm = () => {
               gap: 2.5,
             }}
           >
-            <Stack direction="row" spacing={1} alignItems="flex-start">
+            <Stack direction="row" spacing={1} alignitems="flex-start">
               <TextField
                 name="firstName"
                 label="First Name"
@@ -117,7 +117,7 @@ const ContactForm = () => {
               </IconButton>
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="flex-start">
+            <Stack direction="row" spacing={1} alignitems="flex-start">
               <TextField
                 name="lastName"
                 label="Last Name"
@@ -140,7 +140,7 @@ const ContactForm = () => {
               </IconButton>
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="flex-start">
+            <Stack direction="row" spacing={1} alignitems="flex-start">
               <TextField
                 name="email"
                 label="Email"
@@ -164,7 +164,7 @@ const ContactForm = () => {
               </IconButton>
             </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="flex-start">
+            <Stack direction="row" spacing={1} alignitems="flex-start">
               <TextField
                 name="phone"
                 label="Phone"
@@ -190,7 +190,7 @@ const ContactForm = () => {
             <Stack
               direction="row"
               spacing={2}
-              justifyContent="center"
+              justifycontent="center"
               sx={{ mt: 1 }}
             >
               <Button
